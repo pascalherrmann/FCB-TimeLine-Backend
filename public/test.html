@@ -1,0 +1,48 @@
+<!doctype html>
+
+<html>
+
+<head>
+    <title>Socket.IO chat</title>
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <ul id="messages"></ul>
+    <form action="">
+        <input id="name" placeholder="name" /> <br/>
+        <input id="message" placeholder="message" /> <br/>
+        <button>Send</button>
+    </form>
+
+
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+        $(function() {
+            var socket = io();
+
+            $('form').submit(function() {
+                var obj = {};
+                obj.message = $('#message').val()
+                obj.name = $('#name').val()
+                socket.emit('reaction', obj);
+                // $('#m').val('');
+                $('#message').val('');
+                $('#name').val('');
+                return false;
+            });
+
+            socket.on('reaction', function(obj) {
+                $('#messages').append($('<li>').text(obj.name + ":" + obj.message));
+            });
+
+        });
+    </script>
+
+</body>
+
+</html>
