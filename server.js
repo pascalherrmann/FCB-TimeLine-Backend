@@ -6,6 +6,8 @@ var io = require('socket.io')(http);
 
 var mongourl = "mongodb+srv://root:root@cluster0-ptocl.mongodb.net/test"
 
+
+
 /*
 app.get('/', function(req, res){
     res.sendFile(__dirname + '/public/index.html');
