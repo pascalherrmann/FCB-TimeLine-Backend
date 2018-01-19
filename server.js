@@ -45,7 +45,7 @@ io.on('connection', function (socket) {
 });
 
 
-<<<<<<< HEAD
+
 /*
 MAIN
 */
@@ -62,11 +62,4 @@ io.on('connection', function (socket) {
         io.emit('reaction', reaction);
     });
 });
-=======
 
-io.on('connection', function(socket){
-  socket.on('chat message', function(msg){
-    io.emit('chat message', msg);
-  });
-});
->>>>>>> b2030f71f9cd9df845471587b744d13511cac2c7

@@ -1,0 +1,43 @@
+<!doctype html>
+
+<html>
+
+<head>
+    <title>Socket.IO chat</title>
+    <style>
+
+    </style>
+</head>
+
+<body>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+        var socket = io();
+
+        
+        function send() {
+            var obj = {};
+            obj.message = "hi"
+            obj.name = "jo"
+            socket.emit('reaction', obj);
+            return false;
+        }
+
+
+        var time = 1;
+        var times = 10
+        var interval = setInterval(function() {
+            if (time <= times) {
+                send()
+                time++;
+            } else {
+                clearInterval(interval);
+            }
+        }, 1000);
+    </script>
+
+</body>
+
+</html>
