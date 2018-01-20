@@ -5,7 +5,6 @@
 <head>
     <title>Socket.IO chat</title>
     <style>
-
     </style>
 </head>
 
@@ -14,10 +13,9 @@
     <form action="">
         <input id="name" placeholder="name" /> <br/>
         <input id="message" placeholder="message" /> <br/>
+        <input id="imgpath" placeholder="imgpath" /> <br/>
         <button>Send</button>
     </form>
-
-
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
@@ -29,10 +27,12 @@
                 var obj = {};
                 obj.message = $('#message').val()
                 obj.name = $('#name').val()
+                obj.imgpath = $('#imgpath').val()
                 socket.emit('reaction', obj);
                 // $('#m').val('');
                 $('#message').val('');
                 $('#name').val('');
+                $('#imgpath').val('');
                 return false;
             });
 

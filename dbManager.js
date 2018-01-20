@@ -15,27 +15,8 @@ MongoClient.connect(url, function (err, db) {
 });
 */
 
-function insert(obj, collection) {
-    MongoClient.connect(url, function (err, db) {
-        if (err) throw err;
-        var dbo = db.db("mydb");
 
-        dbo.collection(collection).insertOne(obj, function (err, res) {
-            if (err) throw err;
-            console.log("1 document inserted");
-            db.close();
-        });
-    });
-}
 
-function insertReaction(name, message) {
-
-    var reaction = {}
-    reaction.name = name
-    reaction.message = message
-    insert(reaction, "reactions")
-
-}
 
 function get(collection) {
     MongoClient.connect(url, function (err, db) {
@@ -88,3 +69,21 @@ function getData(gameid) {
 }
 
 //console.log(getData("gameid"))
+
+module.exports = {
+
+    insert: function (obj, collection) {
+        MongoClient.connect(url, function (err, db) {
+            if (err) throw err;
+            var dbo = db.db("mydb");
+
+            dbo.collection(collection).insertOne(obj, function (err, res) {
+                if (err) throw err;
+                console.log("Saved Object to collection >" + collection);
+                console.log(obj);
+                db.close();
+            });
+        });
+    }
+
+};

@@ -4,6 +4,9 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
+var models = require('./models');
+var dbManager = require('./dbManager');
+
 var mongourl = "mongodb+srv://root:root@cluster0-ptocl.mongodb.net/test"
 
 
@@ -36,7 +39,6 @@ io.on('connection', function (socket) {
     });
 });
 
-
 io.on('connection', function (socket) {
     socket.on('chat message', function (msg) {
         console.log('message: ' + msg);
@@ -45,8 +47,6 @@ io.on('connection', function (socket) {
         io.emit('chat message', msg);
     });
 });
-
-
 
 /*
 MAIN
@@ -58,10 +58,13 @@ MAIN
 // get a reaction and share it with everyone 
 io.on('connection', function (socket) {
     socket.on('reaction', function (reaction) {
-        
-        //todo: save to DB
+
+        //save to DB
+        var obj = new models.Reaction(reaction.name, reaction.message, reaction.imgpath)
+        dbManager.insert(obj, "reactions");
+
+        // send to others
         console.log(util.inspect(reaction, false, null))
         io.emit('reaction', reaction);
     });
 });
-

@@ -5,7 +5,6 @@
 <head>
     <title>Socket.IO chat</title>
     <style>
-
     </style>
 </head>
 
@@ -16,7 +15,6 @@
     <script>
         var socket = io();
 
-        
         function send() {
             var obj = {};
             obj.message = "hi"
@@ -24,7 +22,6 @@
             socket.emit('reaction', obj);
             return false;
         }
-
 
         var time = 1;
         var times = 10
