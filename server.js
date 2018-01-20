@@ -1,15 +1,16 @@
 var express = require('express');
+const fileUpload = require('express-fileupload');
 const util = require('util')
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
+
+
 var models = require('./models');
 var dbManager = require('./dbManager');
 
-var mongourl = "mongodb+srv://root:root@cluster0-ptocl.mongodb.net/test"
-
-
+app.use(fileUpload());
 
 /*
 app.get('/', function(req, res){
@@ -23,9 +24,27 @@ app.use(express.static(__dirname + '/public'));
 Sample Code
 */
 
-app.get('/test', function (req, res) {
-    console.log("test");
+app.post('/test', function (req, res) {
+     console.log("Reached");
+		  if (!req.files.filename){
+     console.log(req);
+		console.log("broke");
+    return res.status(400).send('No files were uploaded.');
+	}
+    console.log("gottem");
+  // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
+  let sampleFile = req.files.filename
+
+  console.log(sampleFile);
+  // Use the mv() method to place the file somewhere on your server
+  sampleFile.mv('./files/'+req.files.filename.name, function(err) {
+    if (err)
+	console.log(err);
+      return res.status(500).send(err);
+
+    res.send('File uploaded!');
 });
+})
 
 http.listen(3000, function () {
     console.log('listening on *:3000');
