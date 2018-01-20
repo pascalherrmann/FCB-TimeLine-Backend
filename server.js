@@ -26,13 +26,11 @@ Sample Code
 */
 
 app.post('/test', function (req, res) {
-     console.log("Reached");
 		  if (!req.files.filename){
-     console.log(req);
-		console.log("broke");
-    return res.status(400).send('No files were uploaded.');
+			console.log("broke");
+    		return res.status(400).send('No files were uploaded.');
 	}
-    console.log("gottem");
+
   // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
   let sampleFile = req.files.filename
 
@@ -44,8 +42,27 @@ app.post('/test', function (req, res) {
       return res.status(500).send(err);
 
     res.send('File uploaded!');
+	});
 });
-})
+/**
+ *  Gets all pictures +2 min - 20 sec from a goal
+ *  Input: Time stamp of goal
+ *  Query: Queries all reactions 20 seconds before the goal and 2 min after the goal
+ *
+ **/
+app.get('/goal',function(req,res){
+		//
+  const findDocuments = function(db, callback) {
+  // Get the documents collection
+  const collection = db.collection('documents');
+  // Find some documents
+  collection.find({timestamp:{$gt:req.timestamp+120,$lt:req.timestamp-20}}).toArray(function(err, docs) {
+    assert.equal(err, null);
+	res.send(docs);
+  });
+  }
+
+});
 
 http.listen(config.web.port, function () {
     console.log('listening on *:'+config.web.port);
