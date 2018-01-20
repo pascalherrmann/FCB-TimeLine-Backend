@@ -1,7 +1,7 @@
 var MongoClient = require('mongodb').MongoClient,
     assert = require('assert');
 
-var url = "mongodb://localhost:27017/";
+var config = require('./config');
 
 /*
 MongoClient.connect(url, function (err, db) {
@@ -15,11 +15,8 @@ MongoClient.connect(url, function (err, db) {
 });
 */
 
-
-
-
 function get(collection) {
-    MongoClient.connect(url, function (err, db) {
+    MongoClient.connect(config.db.url, function (err, db) {
         if (err) throw err;
         var dbo = db.db("mydb");
         dbo.collection(collection).find({}).toArray(function (err, result) {
@@ -30,9 +27,8 @@ function get(collection) {
     });
 }
 
-//var url = "mongodb+srv://root:root@cluster0-ptocl.mongodb.net/test"
 function connect() {
-    MongoClient.connect(url, function (err, db) {
+    MongoClient.connect(config.db.url, function (err, db) {
         assert.equal(null, err);
         console.log("Connected successfully to server");
 
@@ -68,12 +64,10 @@ function getData(gameid) {
     }
 }
 
-//console.log(getData("gameid"))
-
 module.exports = {
 
     insert: function (obj, collection) {
-        MongoClient.connect(url, function (err, db) {
+        MongoClient.connect(config.db.url, function (err, db) {
             if (err) throw err;
             var dbo = db.db("mydb");
 

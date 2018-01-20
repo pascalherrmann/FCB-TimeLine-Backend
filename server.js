@@ -9,6 +9,7 @@ var io = require('socket.io')(http);
 
 var models = require('./models');
 var dbManager = require('./dbManager');
+var config = require('./config');
 
 app.use(fileUpload());
 
@@ -46,8 +47,8 @@ app.post('/test', function (req, res) {
 });
 })
 
-http.listen(3000, function () {
-    console.log('listening on *:3000');
+http.listen(config.web.port, function () {
+    console.log('listening on *:'+config.web.port);
 });
 
 io.on('connection', function (socket) {
