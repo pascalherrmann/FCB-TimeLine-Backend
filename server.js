@@ -88,3 +88,12 @@ io.on('connection', function (socket) {
         io.emit('reaction', reaction);
     });
 });
+
+app.get('/reactions', function(req, res){
+
+    //dbManager.
+    
+});
+
+
+// todo: like-DB, get for all. delete
