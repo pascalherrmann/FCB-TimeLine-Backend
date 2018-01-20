@@ -18,6 +18,7 @@ app.get('/', function(req, res){
 */
 
 app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/files'));
 var storage = multer.diskStorage({
     destination: function (req, file, callback) {
         callback(null, "./files")
@@ -45,6 +46,14 @@ app.post('/test', function (req, res) {
         console.log("Uploaded");
     })
 })
+
+app.get('/video_urls',function(req,res){
+       var resp = dbManager.getFiltered({pinId:req.pinid},"reactions",function (r) {
+       		 res.send(JSON.stringify(r));
+    });
+	
+	
+});
 
 app.get('/goal', function (req, res) {
 
@@ -123,6 +132,7 @@ io.on('connection', function (socket) {
 // PIN
 //
 app.get('/pins', function (req, res) {
+   console.log("RECEVIED PIN REQUEST");
     res.setHeader('Content-Type', 'application/json');
     var resp = dbManager.getMappedPins(function (r) {
         res.send(JSON.stringify(r));
@@ -138,7 +148,7 @@ io.on('connection', function (socket) {
 
         // send to others
         console.log(util.inspect(obj, false, null))
-        io.emit('pin', obj);
+        io.emit('pins', obj);
     });
 });
 
