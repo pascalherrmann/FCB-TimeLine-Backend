@@ -3,6 +3,8 @@ var MongoClient = require('mongodb').MongoClient,
 
 var config = require('./config');
 
+var debug = false;
+
 /*
 MongoClient.connect(url, function (err, db) {
     if (err) throw err;
@@ -25,7 +27,7 @@ function connect() {
 }
 
 module.exports = {
-    
+
     insert: function (obj, collection) {
         MongoClient.connect(config.db.url, function (err, db) {
             if (err) throw err;
@@ -40,14 +42,17 @@ module.exports = {
         });
     },
 
-    get: function(collection) {
-        MongoClient.connect(config.db.url, function (err, db) {
+    get: function (collection, callback) {
+        return MongoClient.connect(config.db.url, function (err, db) {
             if (err) throw err;
             var dbo = db.db("mydb");
-            dbo.collection(collection).find({}).toArray(function (err, result) {
+            return dbo.collection(collection).find({}).toArray(function (err, result) {
                 if (err) throw err;
-                console.log(result);
+                if (debug) console.log(result);
                 db.close();
+                callback(result);
+                return result;
+
             });
         });
     }
