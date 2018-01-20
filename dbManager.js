@@ -55,7 +55,22 @@ module.exports = {
 
             });
         });
+    },
+    getFiltered: function (filter,collection, callback) {
+        return MongoClient.connect(config.db.url, function (err, db) {
+            if (err) throw err;
+            var dbo = db.db("mydb");
+            return dbo.collection(collection).find(filter).toArray(function (err, result) {
+                if (err) throw err;
+                if (debug) console.log(result);
+                db.close();
+                callback(result);
+                return result;
+
+            });
+        });
     }
+
 
 };
 
