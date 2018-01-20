@@ -124,7 +124,7 @@ io.on('connection', function (socket) {
 //
 app.get('/pins', function (req, res) {
     res.setHeader('Content-Type', 'application/json');
-    var resp = dbManager.get("pins", function (r) {
+    var resp = dbManager.getMappedPins(function (r) {
         res.send(JSON.stringify(r));
     });
 })

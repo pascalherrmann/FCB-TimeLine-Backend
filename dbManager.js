@@ -70,41 +70,51 @@ module.exports = {
 
             });
         });
-    }
+    },
+
+    getMappedPins: function (callback) {
+    return MongoClient.connect(config.db.url, function (err, db) {
+        if (err) throw err;
+        var dbo = db.db("mydb");
+
+        return dbo.collection("pins").find({}).toArray(function (err, pins) {
+            if (err) throw err;
+            if (debug) console.log(pins);
+
+
+
+            var pinIDs = pins.map(function (pin) {
+                return "" + pin._id;
+            });
+
+            dbo.collection("reactions").find({
+                pinID: {
+                    $in: pinIDs
+                }
+            }).toArray(function (err, reactions) {
+                db.close();
+
+                pins.forEach(function (pin) {
+                    pin.items = reactions.filter(function (r) {
+                        return r.pinID == pin._id;
+                    }).length;
+                });
+
+                callback(pins);
+
+                return
+            })
+
+            return pins;
+        })
+    })
+}
 
 
 };
 
 connect();
 
-/*
 
 
-function test(collection, callback) {
-    MongoClient.connect(config.db.url, function (err, db) {
-        if (err) throw err;
-        var dbo = db.db("mydb");
 
-        return dbo.collection(collection).find({
-            group: "Muse"
-        }).exec().then(function (users) {
-            return bluebird.map(users, function (user) {
-                return Items.find({
-                    user_id: user._id
-                }).exec().then(function (items) {
-                    user.items = items;
-                    return user;
-                });
-            }, {
-                concurrency: 5
-            });
-        }).then(function (users) {
-            // do something with users
-        }).catch(function (err) {
-            // do something with errors from either find
-        });
-
-
-    });
-}
-*/
