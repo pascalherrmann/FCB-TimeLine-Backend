@@ -9,8 +9,7 @@ var config = require('./config');
 
 var connected = 0;
 
-
-var multer  = require('multer')
+var multer = require('multer')
 
 /*
 app.get('/', function(req, res){
@@ -20,31 +19,32 @@ app.get('/', function(req, res){
 
 app.use(express.static(__dirname + '/public'));
 var storage = multer.diskStorage({
-	destination: function(req,file,callback){
-		callback(null,"./files")
-	},
-	filename:function(req,file,callback){
-			console.log(file.originalname)
-			callback(null,String(file.originalname));
-	}
+    destination: function (req, file, callback) {
+        callback(null, "./files")
+    },
+    filename: function (req, file, callback) {
+        console.log(file.originalname)
+        callback(null, String(file.originalname));
+    }
 });
 
 /*
 Sample Code
 */
-var upload = multer({storage:storage}).single('filename');
+var upload = multer({
+    storage: storage
+}).single('filename');
 app.post('/test', function (req, res) {
-        console.log("reached");
-        upload(req,res,function(err){
-        if( err){
-                console.log("BROKE!" + err);
-                return res.end("err")
+    console.log("reached");
+    upload(req, res, function (err) {
+        if (err) {
+            console.log("BROKE!" + err);
+            return res.end("err")
         }
         res.end("done");
-  console.log("Uploaded");
+        console.log("Uploaded");
+    })
 })
-})
-
 
 app.get('/goal', function (req, res) {
 
@@ -90,8 +90,6 @@ io.on('connection', function (socket) {
     });
 });
 
-
-
 /*
 MAIN
 */
@@ -113,8 +111,8 @@ io.on('connection', function (socket) {
     socket.on('reaction', function (reaction) {
 
         var obj = new models.Reaction(reaction.type, reaction.pinID, reaction.userID, reaction.text, reaction.mediaPath)
-        dbManager.insert(obj, "reaction");
-        
+        dbManager.insert(obj, "reactions");
+
         //todo: save to DB
         console.log(util.inspect(obj, false, null))
         io.emit('reaction', obj);
@@ -124,7 +122,6 @@ io.on('connection', function (socket) {
 //
 // PIN
 //
-
 app.get('/pins', function (req, res) {
     res.setHeader('Content-Type', 'application/json');
     var resp = dbManager.get("pins", function (r) {
@@ -142,5 +139,21 @@ io.on('connection', function (socket) {
         // send to others
         console.log(util.inspect(obj, false, null))
         io.emit('pin', obj);
+    });
+});
+
+//
+// Vote
+//
+io.on('connection', function (socket) {
+    socket.on('vote', function (vote) {
+
+        //save to DB
+        var obj = new models.Vote(vote.type, vote.userID, vote.reactionID)
+        dbManager.insert(obj, "votes");
+
+        // send to others
+        console.log(util.inspect(obj, false, null))
+        io.emit('vote', obj);
     });
 });

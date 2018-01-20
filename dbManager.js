@@ -56,7 +56,8 @@ module.exports = {
             });
         });
     },
-    getFiltered: function (filter,collection, callback) {
+
+    getFiltered: function (filter, collection, callback) {
         return MongoClient.connect(config.db.url, function (err, db) {
             if (err) throw err;
             var dbo = db.db("mydb");
@@ -75,3 +76,35 @@ module.exports = {
 };
 
 connect();
+
+/*
+
+
+function test(collection, callback) {
+    MongoClient.connect(config.db.url, function (err, db) {
+        if (err) throw err;
+        var dbo = db.db("mydb");
+
+        return dbo.collection(collection).find({
+            group: "Muse"
+        }).exec().then(function (users) {
+            return bluebird.map(users, function (user) {
+                return Items.find({
+                    user_id: user._id
+                }).exec().then(function (items) {
+                    user.items = items;
+                    return user;
+                });
+            }, {
+                concurrency: 5
+            });
+        }).then(function (users) {
+            // do something with users
+        }).catch(function (err) {
+            // do something with errors from either find
+        });
+
+
+    });
+}
+*/

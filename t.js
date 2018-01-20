@@ -1,3 +1,4 @@
 var dbManager = require('./dbManager');
-var resp = dbManager.get("reactions");
-console.log(resp);
+dbManager.getFiltered({"pinID":"poijpoijposdijaf"},"reactions", function(resp){
+    console.log(resp)
+})

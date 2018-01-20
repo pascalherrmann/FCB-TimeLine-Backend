@@ -32,12 +32,34 @@
         <button>Send</button>
     </form>
 
+    <h1>Votes</h1>
+    <form action="" id="vote">
+        <input id="v_type" placeholder="v_type" /> <br/>
+        <input id="v_user" placeholder="v_user" /> <br/>
+        <input id="v_reaction" placeholder="v_reaction" /> <br/>
+        <button>Send</button>
+    </form>
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
         $(function() {
             var socket = io();
 
+            $('#vote').submit(function() {
+                var obj = {};
+                obj.type = $('#v_type').val()
+                obj.userID = $('#v_user').val()
+                obj.reactionID = $('#v_reaction').val()
+
+                socket.emit('vote', obj);
+
+                $('#v_type').val('');
+                $('#v_user').val('');
+                $('#v_reaction').val('');
+
+                return false;
+            });
             
             $('#pin').submit(function() {
                 var obj = {};
