@@ -1,12 +1,8 @@
 var express = require('express');
-const fileUpload = require('express-fileupload');
 const util = require('util')
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-
-
-
 var models = require('./models');
 var dbManager = require('./dbManager');
 var config = require('./config');
@@ -14,7 +10,7 @@ var config = require('./config');
 var connected = 0;
 
 
-app.use(fileUpload());
+var multer  = require('multer')
 
 /*
 app.get('/', function(req, res){
@@ -23,32 +19,31 @@ app.get('/', function(req, res){
 */
 
 app.use(express.static(__dirname + '/public'));
+var storage = multer.diskStorage({
+	destination: function(req,file,callback){
+		callback(null,"./files")
+	},
+	filename:function(req,file,callback){
+			console.log(file.originalname)
+			callback(null,String(file.originalname));
+	}
+});
 
 /*
 Sample Code
 */
-
+var upload = multer({storage:storage}).single('filename');
 app.post('/test', function (req, res) {
-    if (!req.files.filename) {
-        console.log("broke");
-        return res.status(400).send('No files were uploaded.');
-    }
-
-
-    // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
-    let sampleFile = req.files.filename
-
-    console.log(sampleFile);
-    // Use the mv() method to place the file somewhere on your server
-    sampleFile.mv('./files/' + req.files.filename.name, function (err) {
-        if (err)
-            console.log(err);
-        return res.status(500).send(err);
-
-        res.send('File uploaded!');
-    });
-});
-
+        console.log("reached");
+        upload(req,res,function(err){
+        if( err){
+                console.log("BROKE!" + err);
+                return res.end("err")
+        }
+        res.end("done");
+  console.log("Uploaded");
+})
+})
 
 
 app.get('/goal', function (req, res) {
@@ -74,6 +69,7 @@ http.listen(config.web.port, function () {
     console.log('listening on *:' + config.web.port);
 });
 
+
 io.on('connection', function (socket) {
     connected++;
     console.log('a user connected - ' + connected + " connected");
@@ -84,6 +80,7 @@ io.on('connection', function (socket) {
     });
 });
 
+
 io.on('connection', function (socket) {
     socket.on('chat message', function (msg) {
         console.log('message: ' + msg);
@@ -92,6 +89,8 @@ io.on('connection', function (socket) {
         io.emit('chat message', msg);
     });
 });
+
+
 
 /*
 MAIN
@@ -103,12 +102,8 @@ MAIN
 // get a reaction and share it with everyone 
 io.on('connection', function (socket) {
     socket.on('reaction', function (reaction) {
-
-        //save to DB
-        var obj = new models.Reaction(reaction.name, reaction.message, reaction.imgpath)
-        dbManager.insert(obj, "reactions");
-
-        // send to others
+        
+        //todo: save to DB
         console.log(util.inspect(reaction, false, null))
         io.emit('reaction', reaction);
     });
