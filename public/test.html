@@ -10,10 +10,21 @@
 
 <body>
     <ul id="messages"></ul>
+    
+    <h1>Reaction</h1>
     <form action="">
         <input id="name" placeholder="name" /> <br/>
         <input id="message" placeholder="message" /> <br/>
         <input id="imgpath" placeholder="imgpath" /> <br/>
+        <button>Send</button>
+    </form>
+    
+    <h1>Pins</h1>
+        <form action="" id="pins">
+        <input id="p_type" placeholder="p_type" /> <br/>
+        <input id="p_match" placeholder="p_match" /> <br/>
+        <input id="p_time" placeholder="p_time" /> <br/>
+        <input id="p_scorer" placeholder="p_scorer" /> <br/>
         <button>Send</button>
     </form>
 
@@ -25,14 +36,18 @@
 
             $('form').submit(function() {
                 var obj = {};
-                obj.message = $('#message').val()
-                obj.name = $('#name').val()
-                obj.imgpath = $('#imgpath').val()
-                socket.emit('reaction', obj);
-                // $('#m').val('');
-                $('#message').val('');
-                $('#name').val('');
-                $('#imgpath').val('');
+                obj.type = $('#p_type').val()
+                obj.matchID = $('#p_match').val()
+                obj.time = $('#p_time').val()
+                obj.scorer = $('#p_scorer').val()
+                
+                socket.emit('pin', obj);
+
+                $('#p_type').val('');
+                $('#p_match').val('');
+                $('#p_time').val('');
+                $('#p_scorer').val('');
+                
                 return false;
             });
 

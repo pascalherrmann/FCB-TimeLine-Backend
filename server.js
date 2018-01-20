@@ -100,7 +100,16 @@ MAIN
 //
 // SENDING REACTION
 //
-// get a reaction and share it with everyone 
+
+// get previous reactions
+app.get('/reactions', function (req, res) {
+    res.setHeader('Content-Type', 'application/json');
+    var resp = dbManager.get("reactions", function (r) {
+        res.send(JSON.stringify(r));
+    });
+})
+
+// receive live reaction -> save it to db and share it with everyone 
 io.on('connection', function (socket) {
     socket.on('reaction', function (reaction) {
 
@@ -114,14 +123,30 @@ io.on('connection', function (socket) {
     });
 });
 
+//
+// PIN
+//
 
-app.get('/reactions', function (req, res) {
+app.get('/pins', function (req, res) {
     res.setHeader('Content-Type', 'application/json');
-    var resp = dbManager.get("reactions", function(r){
-    res.send(JSON.stringify(r));
+    var resp = dbManager.get("pins", function (r) {
+        res.send(JSON.stringify(r));
     });
-    console.log(resp);
 })
+
+
+io.on('connection', function (socket) {
+    socket.on('pin', function (pin) {
+
+        //save to DB
+        var obj = new models.Pin(pin.type, pin.matchID, pin.time, pin.scorer)
+        dbManager.insert(obj, "pins");
+
+        // send to others
+        console.log(util.inspect(pin, false, null))
+        io.emit('pin', pin);
+    });
+});
 
 
 // todo: like-DB, get for all. delete
