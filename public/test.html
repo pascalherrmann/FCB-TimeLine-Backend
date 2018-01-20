@@ -5,22 +5,26 @@
 <head>
     <title>Socket.IO chat</title>
     <style>
+
+
     </style>
 </head>
 
 <body>
     <ul id="messages"></ul>
-    
+
     <h1>Reaction</h1>
-    <form action="">
-        <input id="name" placeholder="name" /> <br/>
-        <input id="message" placeholder="message" /> <br/>
-        <input id="imgpath" placeholder="imgpath" /> <br/>
+    <form action="" id="reaction">
+        <input id="r_type" placeholder="r_type" /> <br/>
+        <input id="r_pinID" placeholder="r_pinID" /> <br/>
+        <input id="r_userID" placeholder="r_userID" /> <br/>
+        <input id="r_text" placeholder="r_text" /> <br/>
+        <input id="r_mediaPath" placeholder="r_mediaPath" /> <br/>
         <button>Send</button>
     </form>
-    
+
     <h1>Pins</h1>
-        <form action="" id="pins">
+    <form action="" id="pin">
         <input id="p_type" placeholder="p_type" /> <br/>
         <input id="p_match" placeholder="p_match" /> <br/>
         <input id="p_time" placeholder="p_time" /> <br/>
@@ -34,28 +38,50 @@
         $(function() {
             var socket = io();
 
-            $('form').submit(function() {
+            
+            $('#pin').submit(function() {
                 var obj = {};
                 obj.type = $('#p_type').val()
                 obj.matchID = $('#p_match').val()
                 obj.time = $('#p_time').val()
                 obj.scorer = $('#p_scorer').val()
-                
+
                 socket.emit('pin', obj);
 
                 $('#p_type').val('');
                 $('#p_match').val('');
                 $('#p_time').val('');
                 $('#p_scorer').val('');
+
+                return false;
+            });
+
+            
+            $('#reaction').submit(function() {
+                var obj = {};
+                obj.type = $('#r_type').val();
+                obj.pinID = $('#r_pinID').val();
+                obj.userID = $('#r_userID').val();
+                obj.text = $('#r_text').val();
+                obj.mediaPath = $('#r_mediaPath').val();
                 
+                socket.emit('reaction', obj);
+                
+                $('#r_type').val('');
+                $('#r_pinID').val('');
+                $('#r_userID').val('');
+                $('#r_text').val('');
+                $('#r_mediaPath').val('');
+
                 return false;
             });
 
             socket.on('reaction', function(obj) {
-                $('#messages').append($('<li>').text(obj.name + ":" + obj.message));
+                $('#messages').append($('<li>').text(obj.userID + ":" + obj.time));
             });
 
         });
+
     </script>
 
 </body>

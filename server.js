@@ -112,9 +112,12 @@ app.get('/reactions', function (req, res) {
 io.on('connection', function (socket) {
     socket.on('reaction', function (reaction) {
 
+        var obj = new models.Reaction(reaction.type, reaction.pinID, reaction.userID, reaction.text, reaction.mediaPath)
+        dbManager.insert(obj, "reaction");
+        
         //todo: save to DB
-        console.log(util.inspect(reaction, false, null))
-        io.emit('reaction', reaction);
+        console.log(util.inspect(obj, false, null))
+        io.emit('reaction', obj);
     });
 });
 
@@ -137,7 +140,7 @@ io.on('connection', function (socket) {
         dbManager.insert(obj, "pins");
 
         // send to others
-        console.log(util.inspect(pin, false, null))
-        io.emit('pin', pin);
+        console.log(util.inspect(obj, false, null))
+        io.emit('pin', obj);
     });
 });
