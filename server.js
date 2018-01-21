@@ -36,19 +36,23 @@ var upload = multer({
     storage: storage
 }).single('filename');
 app.post('/test', function (req, res) {
+    console.log("HELLOi " + req.params)
     console.log("reached");
     upload(req, res, function (err) {
         if (err) {
             console.log("BROKE!" + err);
             return res.end("err")
         }
+	dbManager.insert({type:"1",pinID : req.headers.pinid,userID:'',text:'',mediaPath:req.file.filename},"reactions")
         res.end("done");
+	
         console.log("Uploaded");
     })
 })
 
 app.get('/video_urls',function(req,res){
-       var resp = dbManager.getFiltered({pinId:req.pinid},"reactions",function (r) {
+	console.log(req.query);
+       var resp = dbManager.getFiltered({pinID:req.query.pinid},"reactions",function (r) {
        		 res.send(JSON.stringify(r));
     });
 	
