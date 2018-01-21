@@ -113,8 +113,10 @@ controllers.controller('StartController', function ($scope, $http, MatchesFactor
 controllers.controller('MatchController', function ($scope, $http, $route, PinsFactory) {
         var socket = io.connect();
 
+
     var id = $route.current.params.ID;
-    $scope.id = id
+    $scope.pin = {}
+    $scope.pin.matchID = id
 
     $scope.deletePin = function (id) {
         console.log(id)
@@ -133,6 +135,11 @@ controllers.controller('MatchController', function ($scope, $http, $route, PinsF
             $scope.pins = data;
             $scope.loading = false;
         });
+
+      socket.on('pins', function(obj) {
+    $scope.pins.push(obj);
+    $scope.$apply();
+  });
 
 
 })

@@ -34,6 +34,7 @@ module.exports = {
 
             var ObjectId = require('mongodb').ObjectID;
 
+            console.log("checking for iD: "+id)
             if (err) throw err;
             var dbo = db.db("mydb");
             var myquery = {
