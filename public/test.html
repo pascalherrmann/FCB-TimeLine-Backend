@@ -6,7 +6,6 @@
     <title>Socket.IO chat</title>
     <style>
 
-
     </style>
 </head>
 
@@ -40,23 +39,54 @@
         <button>Send</button>
     </form>
 
+    <br/>
+    <form action="" id="samplePins">
+
+        <button>Create Sample Pins</button></form>
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
-
-        function createSamplePins(){
-            var sampleTimes = [2, 1, 1, 1, 2, 1, 1, 1]
-            var sampleTypes = [5, 25, 41, 63, 65, 75, 76, 84]
-            var scorer = ["Bremen", "Bremen", "Bayern", "Bayern", "Bremen", "Bremen", "Bayern", "Bayern"]
-
-            for ()
-        }
-
         $(function() {
 
 
 
             var socket = io();
+
+            $('#samplePins').submit(function() {
+                console.log("oijoij");
+
+                var sampleTypes = [2, 1, 1, 1, 2, 1, 1, 1];
+                var sampleTimes = [5, 25, 41, 63, 65, 75, 76, 84];
+                var scorer = ["Bremen", "Bremen", "Bayern", "Bayern", "Bremen", "Bremen", "Bayern", "Bayern"];
+
+                var time = 0;
+                var times = sampleTimes.length-1;
+
+                var interval = setInterval(function() {
+                    if (time <= times) {
+                        sendPin(sampleTypes[time], 0, sampleTimes[time], scorer[time])
+                        time++;
+                        console.log(sampleTimes[time])
+                    } else {
+                        clearInterval(interval);
+                    }
+                }, sampleTimes[time] * 100);
+
+
+                return false; //important!
+            })
+
+            function sendPin(type, id, time, scorer) {
+                var obj = {};
+                obj.type = type
+                obj.matchID = id
+                obj.time = time
+                obj.scorer = scorer
+
+                socket.emit('pin', obj);
+
+            }
 
             $('#vote').submit(function() {
                 var obj = {};
@@ -72,7 +102,7 @@
 
                 return false;
             });
-            
+
             $('#pin').submit(function() {
                 var obj = {};
                 obj.type = $('#p_type').val()
@@ -90,7 +120,7 @@
                 return false;
             });
 
-            
+
             $('#reaction').submit(function() {
                 var obj = {};
                 obj.type = $('#r_type').val();
@@ -98,9 +128,9 @@
                 obj.userID = $('#r_userID').val();
                 obj.text = $('#r_text').val();
                 obj.mediaPath = $('#r_mediaPath').val();
-                
+
                 socket.emit('reaction', obj);
-                
+
                 $('#r_type').val('');
                 $('#r_pinID').val('');
                 $('#r_userID').val('');
@@ -115,7 +145,6 @@
             });
 
         });
-
     </script>
 
 </body>
