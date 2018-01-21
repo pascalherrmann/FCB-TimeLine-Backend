@@ -151,21 +151,13 @@ io.on('connection', function (socket) {
 //
 // PIN
 //
-app.get('/pins', function (req, res) {
-    console.log("RECEVIED PIN REQUEST");
-    res.setHeader('Content-Type', 'application/json');
-    var resp = dbManager.getMappedPins(function (r) {
-        res.send(JSON.stringify(r));
-    });
-})
-
 // hier alle Pins für ein Match
 app.get('/pins/:matchID', function (req, res) {
 
     var matchID = req.params.matchID
     var filter = {"matchID":matchID}
     res.setHeader('Content-Type', 'application/json');
-    var resp = dbManager.getFiltered(filter, "pins", function (r) {
+    var resp = dbManager.getMappedPins(filter, function (r) {
         res.send(JSON.stringify(r));
     });
 })
@@ -240,3 +232,4 @@ app.delete('/matches/:id', function (req, res) {
 
 
 //get all pins for one match with all reactions
+// get all reactions where pin_id in ...

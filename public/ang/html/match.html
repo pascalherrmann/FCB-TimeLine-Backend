@@ -1,21 +1,29 @@
-
-
-
-
-
+<h1>Match</h1>
 
 
 <div class="row">
 
-
     <div class="col-md-8">
-        <h1>Match</h1>
+
+        <h3>Pins</h3>
 
         <div class="well" ng-repeat="pin in pins">
 
             Time: {{pin.time}}
 
             <br/> Scorer: {{pin.scorer}}
+
+            <br/>{{pin.reactions.length}} Reactions!
+
+            <br/>
+
+<button type="button" class="btn btn-default" ng-click="isCollapsed = !isCollapsed">Toggle collapse Vertically</button>
+	<hr>
+	<div uib-collapse="isCollapsed">
+		Some content
+        {{pin.reactions}}
+	</div>
+
 
             <button type="button" class="btn btn-danger pull-right" ng-click="deletePin(pin._id)">Delete</button>
 
@@ -42,5 +50,3 @@
     </div>
 
 </div>
-
-{{pins}}

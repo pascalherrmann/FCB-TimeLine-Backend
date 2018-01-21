@@ -92,12 +92,12 @@ module.exports = {
         });
     },
 
-    getMappedPins: function (callback) {
+    getMappedPins: function (filter, callback) {
         return MongoClient.connect(config.db.url, function (err, db) {
             if (err) throw err;
             var dbo = db.db("mydb");
 
-            return dbo.collection("pins").find({}).toArray(function (err, pins) {
+            return dbo.collection("pins").find(filter).toArray(function (err, pins) {
                 if (err) throw err;
                 if (debug) console.log(pins);
 
@@ -115,9 +115,10 @@ module.exports = {
                     db.close();
 
                     pins.forEach(function (pin) {
-                        pin.size = reactions.filter(function (r) {
+                        pin.reactions = reactions.filter(function (r) {
                             return r.pinID == pin._id;
-                        }).length;
+                        });
+                        pin.size = pin.reactions.length;
                     });
 
                     callback(pins);
