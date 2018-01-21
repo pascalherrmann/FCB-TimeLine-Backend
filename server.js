@@ -152,6 +152,13 @@ io.on('connection', function (socket) {
 // PIN
 //
 // hier alle Pins für ein Match
+app.get('/pins', function (req, res) {
+    res.setHeader('Content-Type', 'application/json');
+    var resp = dbManager.get("pins", function (r) {
+        res.send(JSON.stringify(r));
+    });
+})
+
 app.get('/pins/:matchID', function (req, res) {
 
     var matchID = req.params.matchID
