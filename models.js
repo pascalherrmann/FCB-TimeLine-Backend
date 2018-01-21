@@ -30,7 +30,7 @@ exports.Pin = class {
 
 exports.Match = class {
 
-    constructor(date, team1, team2) {
+    constructor(time, team1, team2) {
         this.time = time;
         this.team1 = team1;
         this.team2 = team2;
@@ -48,3 +48,9 @@ exports.Vote = class {
     }
 
 };
+
+/*
+todo:
+- enter match
+- get votes of all reactions
+*/

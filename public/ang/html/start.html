@@ -1,0 +1,51 @@
+<div>
+    <h1>Matches</h1>
+
+    <div class="row">
+        <div class="col-sm-8">
+
+
+            <div class="well" ng-repeat="match in matches"><b>{{match.team1}}</b> vs. <b>{{match.team2}}</b><button type="button" class="btn btn-danger pull-right" ng-click="deleteMatch(match._id)">Delete</button></div>
+
+
+        </div>
+
+        <div class="col-sm-4">
+
+                <div class="well well-lg">
+
+                    {{match.time}}
+
+
+
+
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="usr" ng-model="match.team1" placeholder="Team 1">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="pwd" ng-model="match.team2" placeholder="Team 2">
+                    </div>
+                    <center>
+                        <div style="display:inline-block; min-height:290px;">
+                            <div uib-datepicker ng-model="match.time" class="well well-sm" datepicker-options="options"></div>
+                        </div>
+                    </center>
+
+                    <button type="button" class="btn btn-primary btn-lg btn-block" ng-click="sendMatch()">Send</button>
+
+
+                </div>
+
+
+
+
+
+
+
+
+        </div>
+
+
+    </div>
+</div>

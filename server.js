@@ -1,5 +1,6 @@
 var express = require('express');
 const util = require('util')
+const bodyParser = require('body-parser');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
@@ -18,6 +19,11 @@ app.get('/', function(req, res){
 */
 
 app.use(express.static(__dirname + '/public'));
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+app.use(bodyParser.json());
+
 var storage = multer.diskStorage({
     destination: function (req, file, callback) {
         callback(null, "./files")
@@ -157,3 +163,33 @@ io.on('connection', function (socket) {
         io.emit('vote', obj);
     });
 });
+
+//
+// Match
+//
+app.get('/matches', function (req, res) {
+    res.setHeader('Content-Type', 'application/json');
+    var resp = dbManager.get("matches", function (r) {
+        res.send(JSON.stringify(r));
+    });
+})
+
+app.post('/matches', function (req, res) {
+    console.log("hi")
+    console.log(req.body.test);
+
+    var obj = new models.Match(req.body.time, req.body.team1, req.body.team2)
+    dbManager.insert(obj, "matches");
+
+    res.send("thanks");
+});
+
+app.delete('/matches/:id', function (req, res) {
+    dbManager.delete("matches", req.params.id)
+    console.log(req.params.id)
+    var resp = {
+        "state": "success"
+    }
+    res.send(JSON.stringify(resp));
+
+})
