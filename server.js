@@ -19,9 +19,12 @@ app.get('/', function(req, res){
 */
 
 app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/files'));
+
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+
 app.use(bodyParser.json());
 
 var storage = multer.diskStorage({
@@ -41,16 +44,36 @@ var upload = multer({
     storage: storage
 }).single('filename');
 app.post('/test', function (req, res) {
+    console.log("HELLOi " + req.params)
     console.log("reached");
     upload(req, res, function (err) {
         if (err) {
             console.log("BROKE!" + err);
             return res.end("err")
         }
+        dbManager.insert({
+            type: "1",
+            pinID: req.headers.pinid,
+            userID: '',
+            text: '',
+            mediaPath: req.file.filename
+        }, "reactions")
         res.end("done");
+
         console.log("Uploaded");
     })
 })
+
+app.get('/video_urls', function (req, res) {
+    console.log(req.query);
+    var resp = dbManager.getFiltered({
+        pinID: req.query.pinid
+    }, "reactions", function (r) {
+        res.send(JSON.stringify(r));
+    });
+
+
+});
 
 app.get('/goal', function (req, res) {
 
@@ -129,8 +152,20 @@ io.on('connection', function (socket) {
 // PIN
 //
 app.get('/pins', function (req, res) {
+    console.log("RECEVIED PIN REQUEST");
     res.setHeader('Content-Type', 'application/json');
     var resp = dbManager.getMappedPins(function (r) {
+        res.send(JSON.stringify(r));
+    });
+})
+
+// hier alle Pins für ein Match
+app.get('/pins/:matchID', function (req, res) {
+
+    var matchID = req.params.matchID
+    var filter = {"matchID":matchID}
+    res.setHeader('Content-Type', 'application/json');
+    var resp = dbManager.getFiltered(filter, "pins", function (r) {
         res.send(JSON.stringify(r));
     });
 })
@@ -144,9 +179,18 @@ io.on('connection', function (socket) {
 
         // send to others
         console.log(util.inspect(obj, false, null))
-        io.emit('pin', obj);
+        io.emit('pins', obj);
     });
 });
+
+app.delete('/pins/:id', function (req, res) {
+    dbManager.delete("pins", req.params.id)
+    console.log(req.params.id)
+    var resp = {
+        "state": "success"
+    }
+    res.send(JSON.stringify(resp));
+})
 
 //
 // Vote
@@ -193,3 +237,6 @@ app.delete('/matches/:id', function (req, res) {
     res.send(JSON.stringify(resp));
 
 })
+
+
+//get all pins for one match with all reactions

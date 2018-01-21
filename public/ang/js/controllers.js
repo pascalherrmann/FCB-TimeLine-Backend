@@ -14,27 +14,28 @@ controllers.controller('StartController', function ($scope, $http, MatchesFactor
 
     $scope.isCollapsedHorizontal = true
 
-        MatchesFactory.getAll()
+    MatchesFactory.getAll()
         .success(function (data) {
             $scope.matches = data;
             $scope.loading = false;
         });
 
+    $scope.deleteMatch = function (id) {
+        console.log(id)
+        MatchesFactory.delete(id)
+    }
 
-            $scope.deleteMatch = function (id) {
-                console.log(id)
-                MatchesFactory.delete(id)
-            }
+    $scope.sendMatch = function () {
 
-        $scope.sendMatch = function () {
+        $scope.match.time = Date.parse($scope.match.time);
 
-            MatchesFactory.create($scope.match)
+        MatchesFactory.create($scope.match)
             .success(function (data) {
                 $scope.loading = false;
                 $scope.formData = {};
                 $scope.todos = data;
             });
-        }
+    }
 
 
 
@@ -42,69 +43,96 @@ controllers.controller('StartController', function ($scope, $http, MatchesFactor
     // test
     //
 
-      $scope.today = function() {
-    $scope.dt = new Date();
-  };
-  $scope.today();
+    $scope.today = function () {
+        $scope.dt = new Date();
+    };
+    $scope.today();
 
-  $scope.clear = function() {
-    $scope.dt = null;
-  };
+    $scope.clear = function () {
+        $scope.dt = null;
+    };
 
-  $scope.options = {
-    customClass: getDayClass,
-    minDate: new Date(),
-    showWeeks: true
-  };
+    $scope.options = {
+        customClass: getDayClass,
+        minDate: new Date(),
+        showWeeks: true
+    };
 
-  // Disable weekend selection
-  function disabled(data) {
-    var date = data.date,
-      mode = data.mode;
-    return mode === 'day' && (date.getDay() === 0 || date.getDay() === 6);
-  }
+    // Disable weekend selection
+    function disabled(data) {
+        var date = data.date,
+            mode = data.mode;
+        return mode === 'day' && (date.getDay() === 0 || date.getDay() === 6);
+    }
 
-  $scope.toggleMin = function() {
-    $scope.options.minDate = $scope.options.minDate ? null : new Date();
-  };
+    $scope.toggleMin = function () {
+        $scope.options.minDate = $scope.options.minDate ? null : new Date();
+    };
 
-  $scope.toggleMin();
+    $scope.toggleMin();
 
-  $scope.setDate = function(year, month, day) {
-    $scope.dt = new Date(year, month, day);
-  };
+    $scope.setDate = function (year, month, day) {
+        $scope.dt = new Date(year, month, day);
+    };
 
-  var tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  var afterTomorrow = new Date(tomorrow);
-  afterTomorrow.setDate(tomorrow.getDate() + 1);
-  $scope.events = [
-    {
-      date: tomorrow,
-      status: 'full'
+    var tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    var afterTomorrow = new Date(tomorrow);
+    afterTomorrow.setDate(tomorrow.getDate() + 1);
+    $scope.events = [
+        {
+            date: tomorrow,
+            status: 'full'
     },
-    {
-      date: afterTomorrow,
-      status: 'partially'
+        {
+            date: afterTomorrow,
+            status: 'partially'
     }
   ];
 
-  function getDayClass(data) {
-    var date = data.date,
-      mode = data.mode;
-    if (mode === 'day') {
-      var dayToCheck = new Date(date).setHours(0,0,0,0);
+    function getDayClass(data) {
+        var date = data.date,
+            mode = data.mode;
+        if (mode === 'day') {
+            var dayToCheck = new Date(date).setHours(0, 0, 0, 0);
 
-      for (var i = 0; i < $scope.events.length; i++) {
-        var currentDay = new Date($scope.events[i].date).setHours(0,0,0,0);
+            for (var i = 0; i < $scope.events.length; i++) {
+                var currentDay = new Date($scope.events[i].date).setHours(0, 0, 0, 0);
 
-        if (dayToCheck === currentDay) {
-          return $scope.events[i].status;
+                if (dayToCheck === currentDay) {
+                    return $scope.events[i].status;
+                }
+            }
         }
-      }
+
+        return '';
     }
 
-    return '';
-  }
-
 });
+
+controllers.controller('MatchController', function ($scope, $http, $route, PinsFactory) {
+        var socket = io.connect();
+
+    var id = $route.current.params.ID;
+    $scope.id = id
+
+    $scope.deletePin = function (id) {
+        console.log(id)
+        PinsFactory.delete(id)
+    }
+
+    $scope.sendPin = function(){
+        var pin = $scope.pin
+        pin.matchID = id
+        console.log(pin)
+        socket.emit('pin', pin);
+    }
+
+    PinsFactory.getPinsForMatch(id)
+        .success(function (data) {
+            $scope.pins = data;
+            $scope.loading = false;
+        });
+
+
+})

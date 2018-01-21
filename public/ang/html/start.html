@@ -1,23 +1,17 @@
 <div>
     <h1>Matches</h1>
 
+    {{data}}
     <div class="row">
         <div class="col-sm-8">
 
-
-            <div class="well" ng-repeat="match in matches"><b>{{match.team1}}</b> vs. <b>{{match.team2}}</b><button type="button" class="btn btn-danger pull-right" ng-click="deleteMatch(match._id)">Delete</button></div>
-
+            <div class="well" ng-repeat="match in matches"><a href = "#/match/{{match._id}}"><b>{{match.team1}}</b> vs. <b>{{match.team2}}</b></a><button type="button" class="btn btn-danger pull-right" ng-click="deleteMatch(match._id)">Delete</button></div>
 
         </div>
 
         <div class="col-sm-4">
 
                 <div class="well well-lg">
-
-                    {{match.time}}
-
-
-
 
                     <div class="form-group">
                         <input type="text" class="form-control" id="usr" ng-model="match.team1" placeholder="Team 1">

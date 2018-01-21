@@ -114,7 +114,7 @@ module.exports = {
                     db.close();
 
                     pins.forEach(function (pin) {
-                        pin.items = reactions.filter(function (r) {
+                        pin.size = reactions.filter(function (r) {
                             return r.pinID == pin._id;
                         }).length;
                     });

@@ -1,0 +1,34 @@
+<h1>Match</h1>
+
+<div class="well" ng-repeat="pin in pins">
+
+    Time: {{pin.time}}
+
+    <br/> Scorer: {{pin.scorer}}
+
+    <button type="button" class="btn btn-danger pull-right" ng-click="deletePin(pin._id)">Delete</button>
+
+
+</div>
+
+
+
+<h3>Create New Pin</h3>
+
+<div class="form-group">
+    <input type="text" class="form-control" id="usr" ng-model="pin.type" placeholder="Type">
+</div>
+
+<div class="form-group">
+    <input type="text" class="form-control" id="pwd" ng-model="pin.scorer" placeholder="Scorer">
+</div>
+<center>
+    <div style="display:inline-block; min-height:290px;">
+        <div uib-datepicker ng-model="pin.time" class="well well-sm" datepicker-options="options"></div>
+    </div>
+</center>
+
+<button type="button" class="btn btn-primary btn-lg btn-block" ng-click="sendPin()">Send</button>
+
+
+{{pin}}

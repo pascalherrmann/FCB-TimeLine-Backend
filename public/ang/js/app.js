@@ -18,11 +18,15 @@ var toDoApp = angular.module('fcbApp', [
 toDoApp.config(['$routeProvider',
     function ($routeProvider) {
         $routeProvider.
-                when('/', {
-                templateUrl: 'html/start.html',
-                controller: 'StartController'
-            }).
-                otherwise({
-                redirectTo: '/'
-            });
+        when('/', {
+            templateUrl: 'html/start.html',
+            controller: 'StartController'
+        }).
+        when('/match/:ID', {
+            templateUrl: 'html/match.html',
+            controller: 'MatchController'
+        }).
+        otherwise({
+            redirectTo: '/'
+        });
     }]);

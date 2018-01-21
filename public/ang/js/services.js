@@ -13,3 +13,18 @@ var services = angular.module('fcbAppServices', []);
 			}
 		}
 	}]);
+
+
+	services.factory('PinsFactory', ['$http',function($http) {
+		return {
+			getPinsForMatch : function(matchID) {
+				return $http.get('/pins/'+matchID);
+			},
+			create : function(todoData) {
+				return $http.post('/matches', todoData);
+			},
+			delete : function(id) {
+				return $http.delete('/pins/' + id);
+			}
+		}
+	}]);
