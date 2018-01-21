@@ -153,8 +153,10 @@ io.on('connection', function (socket) {
 //
 // hier alle Pins für ein Match
 app.get('/pins', function (req, res) {
+    var matchID = req.params.matchID
+    var filter = {}
     res.setHeader('Content-Type', 'application/json');
-    var resp = dbManager.get("pins", function (r) {
+    var resp = dbManager.getMappedPins(filter, function (r) {
         res.send(JSON.stringify(r));
     });
 })
